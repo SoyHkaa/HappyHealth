@@ -22,5 +22,7 @@
     <string name="reservar">Reservar cita</string>
     <string name="mis_citas">Mis citas</string>
     <string name="next">Siguiente</string>
+    <string name="back">Atrás</string>
+    <string name="volver">Volver</string>
 
 </resources>

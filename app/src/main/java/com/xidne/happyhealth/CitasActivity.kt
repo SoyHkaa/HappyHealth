@@ -26,6 +26,10 @@ class CitasActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        findViewById<android.widget.ImageButton>(R.id.btnBack).setOnClickListener {
+            finish()
+        }
+
         // Solo cargar citas si el usuario está autenticado
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {

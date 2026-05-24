@@ -25,6 +25,7 @@ class ReserveActivity : AppCompatActivity() {
     private lateinit var cvConfirmar: CardView
     private lateinit var btnSiguiente: Button
     private lateinit var btnConfirmar: Button
+    private lateinit var btnVolverPaso1: Button
     private lateinit var etDescripcion: EditText
     private lateinit var etFecha: EditText
 
@@ -32,6 +33,15 @@ class ReserveActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reserve)
         InicializarVariables()
+
+        findViewById<android.widget.ImageButton>(R.id.btnBackHeader).setOnClickListener {
+            finish()
+        }
+
+        btnVolverPaso1.setOnClickListener {
+            cvConfirmar.visibility = View.GONE
+            cvSiguiente.visibility = View.VISIBLE
+        }
 
         // Configura los spinners con opciones
         val optionsEspecialities = arrayOf("General", "Cardiología", "Especialistas")
@@ -75,6 +85,7 @@ class ReserveActivity : AppCompatActivity() {
         cvConfirmar = findViewById(R.id.cvConfirmar)
         btnSiguiente = findViewById(R.id.btnSiguiente)
         btnConfirmar = findViewById(R.id.btnConfirmar)
+        btnVolverPaso1 = findViewById(R.id.btnVolverPaso1)
         etDescripcion = findViewById(R.id.etDescripcion)
         etFecha = findViewById(R.id.etFecha)
     }
