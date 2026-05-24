@@ -44,15 +44,22 @@ class ReserveActivity : AppCompatActivity() {
         }
 
         // Configura los spinners con opciones
-        val optionsEspecialities = arrayOf("General", "Cardiología", "Especialistas")
+        val optionsEspecialities = arrayOf("Seleccione una especialidad", "General", "Cardiología", "Especialistas")
         especialidad.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, optionsEspecialities)
 
         val optionsDoctorSpinner = arrayOf("Katherine Rojas", "Kevin Benalcazar", "Manuela Beltrán", "Sofía López", "Arturo Vidal")
         doctorSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, optionsDoctorSpinner)
 
         btnSiguiente.setOnClickListener {
-            cvSiguiente.visibility = View.GONE
-            cvConfirmar.visibility = View.VISIBLE
+            val descripcion = etDescripcion.text.toString()
+            val especialidadSeleccionada = especialidad.selectedItem?.toString()
+
+            if (descripcion.isEmpty() || especialidadSeleccionada == null || especialidadSeleccionada == "Seleccione una especialidad") {
+                Toast.makeText(this, "Por favor, rellene todos los campos requeridos.", Toast.LENGTH_LONG).show()
+            } else {
+                cvSiguiente.visibility = View.GONE
+                cvConfirmar.visibility = View.VISIBLE
+            }
         }
 
         btnConfirmar.setOnClickListener {
