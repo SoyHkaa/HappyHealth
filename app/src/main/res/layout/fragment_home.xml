@@ -46,9 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="Agenda una cita para una visita clínica"
                 android:textColor="@color/white" />
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -89,72 +87,65 @@
                 android:text="Agenda una cita para una visita en el hogar"
                 android:textColor="@color/black" />
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
+    <!-- Nueva sección de síntomas -->
     <TextView
         android:id="@+id/txtSymptoms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¿Cuáles son tus síntomas?"
-        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        android:text="1. ¿Cuáles son tus síntomas?"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/visitClinic"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintTop_toBottomOf="@id/visitClinic" />
 
-    <LinearLayout
-        android:layout_marginTop="16dp"
-        android:id="@+id/symptomsOptions"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupSintomas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/txtSymptoms"
-        app:layout_constraintTop_toBottomOf="@id/txtSymptoms">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/txtSymptoms"
+        app:singleSelection="false">
 
-        <Button
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFiebre" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Fiebre" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipTos" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tos" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipCabeza" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dolor de cabeza" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipNauseas" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Náuseas" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFatiga" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Fatiga" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipMuscular" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dolor Muscular" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipMareo" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mareos" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipOtro" style="@style/Widget.MaterialComponents.Chip.Filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Otro" />
+    </com.google.android.material.chip.ChipGroup>
 
-            android:id="@+id/temperatureButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/blue"
-            android:gravity="center"
-            android:text="Temperatura"
-            android:textAlignment="center"
-            android:textColor="@color/white" />
+    <EditText
+        android:id="@+id/etSintomaPersonalizado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="Escribe tus síntomas aquí..."
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupSintomas" />
 
-        <Button
-            android:id="@+id/snuffleButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:text="Resfrío"
-            android:textAlignment="center" />
-
-        <Button
-            android:id="@+id/headacheButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@color/dark_grey"
-            android:gravity="center"
-            android:text="Fiebre"
-            android:textAlignment="center" />
-    </LinearLayout>
-
+    <!-- Doctores -->
     <TextView
         android:id="@+id/txtDoctors"
-        android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Doctores populares"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/symptomsOptions"
-        app:layout_constraintStart_toStartOf="@id/symptomsOptions"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etSintomaPersonalizado" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/doctor1"
@@ -162,8 +153,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:cardCornerRadius="5dp"
         app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="5dp"
         app:layout_constraintEnd_toStartOf="@+id/doctor2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtDoctors">
@@ -172,8 +163,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="12dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="60dp"
@@ -194,9 +185,7 @@
                 android:layout_height="wrap_content"
                 android:text="Pediatra"
                 android:textColor="@color/black" />
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -214,8 +203,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="12dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="60dp"
@@ -236,10 +225,22 @@
                 android:layout_height="wrap_content"
                 android:text="Pediatra"
                 android:textColor="@color/black" />
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
+        <!-- Cuadro de Previsualización -->
+    <TextView
+        android:id="@+id/tvDiagnostico"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#F5F5F5"
+        android:padding="16dp"
+        android:text="Selecciona síntomas y un doctor."
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" 
+        app:layout_constraintTop_toBottomOf="@id/doctor1"/>
 
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
