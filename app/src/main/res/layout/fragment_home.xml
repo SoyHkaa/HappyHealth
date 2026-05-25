@@ -135,7 +135,6 @@
     <!-- Slide de Doctores -->
     <TextView
         android:id="@+id/txtDoctors"
-        android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2. Selecciona tu Doctor:"
@@ -250,4 +249,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDiagnostico" />
 
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

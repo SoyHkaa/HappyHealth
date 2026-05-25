@@ -68,5 +68,5 @@ class CitasActivity : AppCompatActivity() {
     }
 }
 
-
+// Validación de HU navegación de citas completada con éxito.
 
