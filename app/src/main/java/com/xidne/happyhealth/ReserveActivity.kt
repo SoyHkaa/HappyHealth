@@ -33,13 +33,26 @@ class ReserveActivity : AppCompatActivity() {
         setContentView(R.layout.activity_reserve)
         InicializarVariables()
 
-        // Configura los spinners con opciones
         val optionsEspecialities = arrayOf("General", "Cardiología", "Especialistas")
         especialidad.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, optionsEspecialities)
 
-        val optionsDoctorSpinner = arrayOf("Katherine Rojas", "Kevin Benalcazar", "Manuela Beltrán", "Sofía López", "Arturo Vidal")
+        val optionsDoctorSpinner = arrayOf("Dr. Chris Frazie", "Dr. Viola Dunn", "Katherine Rojas", "Kevin Benalcazar", "Manuela Beltrán", "Sofía López", "Arturo Vidal")
         doctorSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, optionsDoctorSpinner)
+    
+        val doctorRecibido = intent.getStringExtra("DOCTOR_PREVIO") ?: ""
+        val sintomasRecibidos = intent.getStringExtra("SINTOMAS_PREVIOS") ?: ""
 
+        if (sintomasRecibidos.isNotEmpty()) {
+            etDescripcion.setText(sintomasRecibidos)
+        }
+
+        if (doctorRecibido.isNotEmpty()) {
+            val posicionDoctor = optionsDoctorSpinner.indexOf(doctorRecibido)
+            if (posicionDoctor >= 0) { 
+                doctorSpinner.setSelection(posicionDoctor)
+            }
+        }
+    
         btnSiguiente.setOnClickListener {
             cvSiguiente.visibility = View.GONE
             cvConfirmar.visibility = View.VISIBLE
@@ -54,9 +67,14 @@ class ReserveActivity : AppCompatActivity() {
             if (descripcion.isEmpty() || fecha.isEmpty()) {
                 Toast.makeText(this, "Por favor, rellene todos los campos requeridos.", Toast.LENGTH_LONG).show()
             } else {
-                val cita = Cita(descripcion = descripcion, especialidad = especialidadSeleccionada, doctor = doctorSeleccionado, fecha = fecha)
+                val cita = Cita(
+                    descripcion = descripcion, 
+                    especialidad = especialidadSeleccionada, 
+                    doctor = doctorSeleccionado, 
+                    fecha = fecha
+                )
+                
                 lifecycleScope.launch(Dispatchers.IO) {
-                    // Inserta la cita en la base de datos
                     AppDatabase.getDatabase(applicationContext).citaDao().insert(cita)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(applicationContext, "Cita programada", Toast.LENGTH_SHORT).show()
@@ -67,7 +85,7 @@ class ReserveActivity : AppCompatActivity() {
         }
     }
 
-    // Inicializa las variables de la interfaz
+    // Inicializar las variables de la interfaz
     private fun InicializarVariables() {
         especialidad = findViewById(R.id.especialidad)
         doctorSpinner = findViewById(R.id.doctorSpinner)
@@ -85,6 +103,7 @@ class ReserveActivity : AppCompatActivity() {
         val year = selectedCalendar.get(Calendar.YEAR)
         val month = selectedCalendar.get(Calendar.MONTH)
         val dayOfMonth = selectedCalendar.get(Calendar.DAY_OF_MONTH)
+        
         val listener = DatePickerDialog.OnDateSetListener { _, y, m, d ->
             selectedCalendar.set(y, m, d)
             etScheduleDate.setText("$y-${m + 1}-$d")
@@ -93,6 +112,3 @@ class ReserveActivity : AppCompatActivity() {
         DatePickerDialog(this, listener, year, month, dayOfMonth).show()
     }
 }
-
-
-
