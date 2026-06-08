@@ -11,10 +11,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import java.util.Calendar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 
 class ReserveActivity : AppCompatActivity() {
 
@@ -28,65 +28,27 @@ class ReserveActivity : AppCompatActivity() {
     private lateinit var etDescripcion: EditText
     private lateinit var etFecha: EditText
 
+    private val reservaValidator = ReservaValidator()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reserve)
-        InicializarVariables()
+        
+        inicializarVariables()
+        configurarSpinners()
+        cargarDatosPrevios()
 
-        val optionsEspecialities = arrayOf("General", "Cardiología", "Especialistas")
-        especialidad.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, optionsEspecialities)
-
-        val optionsDoctorSpinner = arrayOf("Dr. Chris Frazie", "Dr. Viola Dunn", "Katherine Rojas", "Kevin Benalcazar", "Manuela Beltrán", "Sofía López", "Arturo Vidal")
-        doctorSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, optionsDoctorSpinner)
-    
-        val doctorRecibido = intent.getStringExtra("DOCTOR_PREVIO") ?: ""
-        val sintomasRecibidos = intent.getStringExtra("SINTOMAS_PREVIOS") ?: ""
-
-        if (sintomasRecibidos.isNotEmpty()) {
-            etDescripcion.setText(sintomasRecibidos)
-        }
-
-        if (doctorRecibido.isNotEmpty()) {
-            val posicionDoctor = optionsDoctorSpinner.indexOf(doctorRecibido)
-            if (posicionDoctor >= 0) { 
-                doctorSpinner.setSelection(posicionDoctor)
-            }
-        }
-    
         btnSiguiente.setOnClickListener {
             cvSiguiente.visibility = View.GONE
             cvConfirmar.visibility = View.VISIBLE
         }
 
         btnConfirmar.setOnClickListener {
-            val descripcion = etDescripcion.text.toString()
-            val especialidadSeleccionada = especialidad.selectedItem.toString()
-            val doctorSeleccionado = doctorSpinner.selectedItem.toString()
-            val fecha = etFecha.text.toString()
-
-            if (descripcion.isEmpty() || fecha.isEmpty()) {
-                Toast.makeText(this, "Por favor, rellene todos los campos requeridos.", Toast.LENGTH_LONG).show()
-            } else {
-                val cita = Cita(
-                    descripcion = descripcion, 
-                    especialidad = especialidadSeleccionada, 
-                    doctor = doctorSeleccionado, 
-                    fecha = fecha
-                )
-                
-                lifecycleScope.launch(Dispatchers.IO) {
-                    AppDatabase.getDatabase(applicationContext).citaDao().insert(cita)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "Cita programada", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-                }
-            }
+            procesarConfirmacionCita()
         }
     }
 
-    // Inicializar las variables de la interfaz
-    private fun InicializarVariables() {
+    private fun inicializarVariables() {
         especialidad = findViewById(R.id.especialidad)
         doctorSpinner = findViewById(R.id.doctorSpinner)
         cvSiguiente = findViewById(R.id.cvSiguiente)
@@ -97,7 +59,58 @@ class ReserveActivity : AppCompatActivity() {
         etFecha = findViewById(R.id.etFecha)
     }
 
-    // Método para mostrar el DatePicker y seleccionar una fecha
+    private fun configurarSpinners() {
+        especialidad.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, reservaValidator.obtenerEspecialidades())
+        doctorSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, reservaValidator.obtenerDoctores())
+    }
+
+    private fun cargarDatosPrevios() {
+        val doctorRecibido = intent.getStringExtra("DOCTOR_PREVIO") ?: ""
+        val sintomasRecibidos = intent.getStringExtra("SINTOMAS_PREVIOS") ?: ""
+
+        if (sintomasRecibidos.isNotEmpty()) {
+            etDescripcion.setText(sintomasRecibidos)
+        }
+
+        if (doctorRecibido.isNotEmpty()) {
+            val posicionDoctor = reservaValidator.obtenerDoctores().indexOf(doctorRecibido)
+            if (posicionDoctor >= 0) { 
+                doctorSpinner.setSelection(posicionDoctor)
+            }
+        }
+    }
+
+    private fun procesarConfirmacionCita() {
+        val descripcion = etDescripcion.text.toString()
+        val especialidadSeleccionada = especialidad.selectedItem.toString()
+        val doctorSeleccionado = doctorSpinner.selectedItem.toString()
+        val fecha = etFecha.text.toString()
+
+        if (!reservaValidator.validarDatosCita(descripcion, fecha)) {
+            Toast.makeText(this, "Por favor, rellene todos los campos requeridos.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val cita = Cita(
+            descripcion = descripcion, 
+            especialidad = especialidadSeleccionada, 
+            doctor = doctorSeleccionado, 
+            fecha = fecha
+        )
+        
+        guardarCitaEnBaseDeDatos(cita)
+    }
+
+    private fun guardarCitaEnBaseDeDatos(cita: Cita) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            AppDatabase.getDatabase(applicationContext).citaDao().insert(cita)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(applicationContext, "Cita programada", Toast.LENGTH_SHORT).show()
+                finish() // Cierra la actividad tras guardar
+            }
+        }
+    }
+
     fun onCLickScheduleDate(v: View?) {
         val etScheduleDate = findViewById<EditText>(R.id.etFecha)
         val year = selectedCalendar.get(Calendar.YEAR)
